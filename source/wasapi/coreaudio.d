@@ -859,7 +859,7 @@ struct AUDIO_VOLUME_NOTIFICATION_DATA
     BOOL bMuted;
     float fMasterVolume;
     UINT nChannels;
-    float afChannelVolumes[ 1 ];
+    float[1] afChannelVolumes;
 }
 
 const IID IID_IAudioEndpointVolumeCallback = makeGuid!"657804FA-D6AD-4496-8A60-352752AF4F89";
