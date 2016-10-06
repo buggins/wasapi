@@ -1,0 +1,12 @@
+{
+    "name": "wasapi",
+    "description": "D binding to Windows Core Audio interfaces: Core Audio interfaces: MMDevice, WASAPI, EndpointVolume API",
+    "homepage": "https://github.com/buggins/wasapi",
+    "license": "Boost",
+    "authors": [
+        "Vadim Lopatin"
+    ],
+
+    "targetName": "wasapi",
+    "targetPath": "lib"
+}
