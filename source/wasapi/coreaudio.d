@@ -735,8 +735,8 @@ enum AUDCLNT_STREAMOPTIONS
 private {
     alias da_AvSetMmThreadCharacteristicsA = HANDLE function(immutable (char) * TaskName, out DWORD TaskIndex);
     alias da_AvRevertMmThreadCharacteristics = BOOL function(HANDLE AvrtHandle);
-    da_AvSetMmThreadCharacteristicsA AvSetMmThreadCharacteristicsA;
-    da_AvRevertMmThreadCharacteristics AvRevertMmThreadCharacteristics;
+    __gshared da_AvSetMmThreadCharacteristicsA AvSetMmThreadCharacteristicsA;
+    __gshared da_AvRevertMmThreadCharacteristics AvRevertMmThreadCharacteristics;
 
     __gshared bool avrtDllLoaded;
 
