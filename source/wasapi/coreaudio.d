@@ -1,5 +1,20 @@
 /**
     Translation Windows of Core Audio interfaces: MMDevice, WASAPI, EndpointVolume API header files.
+
+    Windows only.
+
+```
+    // Useful helper functions: setHighThreadPriority && restoreThreadPriority.
+
+    // use setHighThreadPriority to boost current thread priority
+    void * hTask = setHighThreadPriority();
+
+    // play audio
+
+    // restore normal priority
+    restoreThreadPriority(hTask);
+```
+
 */
 module wasapi.coreaudio;
 version(Windows):
@@ -709,14 +724,58 @@ enum AUDCLNT_STREAMOPTIONS
 }
 
 //AvSetMmThreadCharacteristics
-extern HANDLE AvSetMmThreadCharacteristicsA (
-                               immutable (char) * TaskName,
-                               out DWORD TaskIndex
-                               );
-extern BOOL AvRevertMmThreadCharacteristics (
-                                 HANDLE AvrtHandle
-                                 );
+//extern HANDLE AvSetMmThreadCharacteristicsA (
+//                               immutable (char) * TaskName,
+//                               out DWORD TaskIndex
+//                               );
+//extern BOOL AvRevertMmThreadCharacteristics (
+//                                 HANDLE AvrtHandle
+//                                 );
 
+private {
+    alias da_AvSetMmThreadCharacteristicsA = HANDLE function(immutable (char) * TaskName, out DWORD TaskIndex);
+    alias da_AvRevertMmThreadCharacteristics = BOOL function(HANDLE AvrtHandle);
+    da_AvSetMmThreadCharacteristicsA AvSetMmThreadCharacteristicsA;
+    da_AvRevertMmThreadCharacteristics AvRevertMmThreadCharacteristics;
+
+    __gshared bool avrtDllLoaded;
+
+    void loadAvrt() {
+        if (avrtDllLoaded)
+            return;
+        avrtDllLoaded = true;
+        HMODULE hlib = LoadLibraryA("Avrt.dll");
+        if (hlib) {
+            AvSetMmThreadCharacteristicsA = cast(da_AvSetMmThreadCharacteristicsA) GetProcAddress( hlib, "AvSetMmThreadCharacteristicsA");
+            AvRevertMmThreadCharacteristics = cast(da_AvRevertMmThreadCharacteristics) GetProcAddress( hlib, "AvRevertMmThreadCharacteristics");
+        }
+    }
+}
+
+/**
+    Temporary boost thread priority for real time audio.
+
+    Use returned value to restore thread priority - pass it to restoreThreadPriority.
+  */
+void * setHighThreadPriority() {
+    void * handle = null;
+    loadAvrt();
+    DWORD taskIndex;
+    if (AvSetMmThreadCharacteristicsA)
+        handle = cast(void*)AvSetMmThreadCharacteristicsA("Pro Audio", taskIndex);
+    return handle;
+}
+
+/**
+    Restore normal thread priority.
+*/
+void restoreThreadPriority(void * handle) {
+    if (!handle)
+        return;
+    loadAvrt();
+    if (AvRevertMmThreadCharacteristics)
+        AvRevertMmThreadCharacteristics(cast(HANDLE)handle);
+}
 
 const IID IID_IAudioClient2 = makeGuid!"726778CD-F60A-4eda-82DE-E47610CD78AA";
 interface IAudioClient2 : IAudioClient {
