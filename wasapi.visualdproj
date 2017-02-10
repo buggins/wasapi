@@ -413,6 +413,7 @@
    <Folder name="wasapi">
     <File path="source\wasapi\comutils.d" />
     <File path="source\wasapi\coreaudio.d" />
+    <File path="source\wasapi\midi.d" />
     <File path="source\wasapi\package.d" />
    </Folder>
   </Folder>
