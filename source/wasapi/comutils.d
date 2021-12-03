@@ -55,7 +55,7 @@ struct ComAutoPtr(T : IUnknown) {
 struct WstrAutoPtr {
     LPWSTR ptr;
     alias ptr this;
-    ref WstrAutoPtr opAssign(LPWSTR value) {
+    ref WstrAutoPtr opAssign(LPWSTR value) return {
         if (value && ptr && value !is ptr)
             CoTaskMemFree(ptr);
         ptr = value;

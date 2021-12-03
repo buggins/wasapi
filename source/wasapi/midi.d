@@ -28,6 +28,7 @@ class MidiOutDevice {
     protected this(MidiOutDeviceDesc desc) {
         this.desc = desc;
     }
+nothrow @nogc:
     void sendEvent(ubyte b1) {
         midiOutShortMsg(handle, b1);
     }

@@ -483,8 +483,8 @@ const DEVPKEY_DeviceDisplay_UnpairUninstall = DEFINE_DEVPROPKEY!(0x78c34fc8, 0x1
 const DEVPKEY_DeviceDisplay_RequiresUninstallElevation = DEFINE_DEVPROPKEY!(0x78c34fc8, 0x104a, 0x4aca, 0x9e, 0xa4, 0x52, 0x4d, 0x52, 0x99, 0x6e, 0x57, 0x63); // DEVPROP_TYPE_BOOLEAN
 const DEVPKEY_DeviceDisplay_AlwaysShowDeviceAsConnected = DEFINE_DEVPROPKEY!(0x78c34fc8, 0x104a, 0x4aca, 0x9e, 0xa4, 0x52, 0x4d, 0x52, 0x99, 0x6e, 0x57, 0x65); // DEVPROP_TYPE_BOOLEAN
 
-alias REFPROPERTYKEY = ref const(PROPERTYKEY);
-alias REFPROPVARIANT = ref PROPVARIANT;
+alias REFPROPERTYKEY = const(PROPERTYKEY)*;
+alias REFPROPVARIANT = PROPVARIANT*;
 
 enum ERole //__MIDL___MIDL_itf_mmdeviceapi_0000_0000_0002
 {	
@@ -513,6 +513,7 @@ enum DEVICE_STATEMASK_ALL     = 0x0000000f;
 
 const IID IID_IPropertyStore = makeGuid!"886d8eeb-8cf2-4446-8d02-cdba1dbdcf99";
 interface IPropertyStore : IUnknown {
+extern(Windows) @nogc nothrow:
     HRESULT GetCount( 
             /* [out] */ DWORD *cProps);
 
@@ -533,6 +534,7 @@ interface IPropertyStore : IUnknown {
 
 const IID IID_IMMDeviceCollection = makeGuid!"0BD7A1BE-7A1A-44DB-8397-CC5392387B5E";
 interface IMMDeviceCollection : IUnknown {
+extern(Windows) @nogc nothrow:
     HRESULT GetCount( 
             /* [out] */ 
             out UINT pcDevices);
@@ -546,6 +548,7 @@ interface IMMDeviceCollection : IUnknown {
 
 const IID IID_IMMDevice = makeGuid!"D666063F-1587-4E43-81F1-B948E807363F";
 interface IMMDevice : IUnknown {
+extern(Windows) @nogc nothrow:
     HRESULT Activate( 
             /* [in] */ 
             const ref IID iid,
@@ -574,6 +577,7 @@ interface IMMDevice : IUnknown {
 
 const IID IID_IMMNotificationClient = makeGuid!"7991EEC9-7E89-4D85-8390-6C703CEC60C0";
 interface IMMNotificationClient : IUnknown {
+extern(Windows) @nogc nothrow:
     HRESULT OnDeviceStateChanged( 
             /* [annotation][in] */ 
             LPCWSTR pwstrDeviceId,
@@ -605,6 +609,7 @@ interface IMMNotificationClient : IUnknown {
 
 const IID IID_IMMEndpoint = makeGuid!"1BE09788-6894-4089-8586-9A2A6C265AC5";
 interface IMMEndpoint : IUnknown {
+extern(Windows) @nogc nothrow:
     HRESULT GetDataFlow( 
         /* [annotation][out] */ 
         out EDataFlow pDataFlow);
@@ -626,6 +631,7 @@ enum AUDCLNT_STREAMFLAGS_RATEADJUST               = 0x00100000;
 
 const IID IID_IAudioClient = makeGuid!"1CB9AD4C-DBFA-4c32-B178-C2F568A703B2";
 interface IAudioClient : IUnknown {
+extern(Windows) @nogc nothrow:
     HRESULT Initialize( 
             /* [annotation][in] */ 
             AUDCLNT_SHAREMODE ShareMode,
@@ -779,6 +785,7 @@ void restoreThreadPriority(void * handle) {
 
 const IID IID_IAudioClient2 = makeGuid!"726778CD-F60A-4eda-82DE-E47610CD78AA";
 interface IAudioClient2 : IAudioClient {
+extern(Windows) @nogc nothrow:
     HRESULT IsOffloadCapable( 
             /* [annotation][in] */ 
             AUDIO_STREAM_CATEGORY Category,
@@ -802,6 +809,7 @@ interface IAudioClient2 : IAudioClient {
 
 const IID IID_IAudioClient3 = makeGuid!"7ED4EE07-8E67-4CD4-8C1A-2B7A5987AD42";
 interface IAudioClient3 : IAudioClient2 {
+extern(Windows) @nogc nothrow:
     HRESULT GetSharedModeEnginePeriod( 
             /* [annotation][in] */ 
             const WAVEFORMATEX *pFormat,
@@ -833,6 +841,7 @@ interface IAudioClient3 : IAudioClient2 {
 
 const IID IID_IAudioRenderClient = makeGuid!"F294ACFC-3146-4483-A7BF-ADDCA7C260E2";
 interface IAudioRenderClient : IUnknown {
+extern(Windows) @nogc nothrow:
     HRESULT GetBuffer( 
             /* [annotation][in] */ 
             UINT32 NumFramesRequested,
@@ -849,6 +858,7 @@ interface IAudioRenderClient : IUnknown {
 const IID IID_IMMDeviceEnumerator = makeGuid!"A95664D2-9614-4F35-A746-DE8DB63617E6";
 const CLSID CLSID_MMDeviceEnumerator = makeGuid!"BCDE0395-E52F-467C-8E3D-C4579291692E";
 interface IMMDeviceEnumerator : IUnknown {
+extern(Windows) @nogc nothrow:
     HRESULT EnumAudioEndpoints( 
             /* [in] */ 
             EDataFlow dataFlow,
@@ -885,7 +895,7 @@ interface IMMDeviceEnumerator : IUnknown {
 const IID IID_IAudioCaptureClient = makeGuid!"C8ADBD64-E71E-48a0-A4DE-185C395CD317";
 interface IAudioCaptureClient : IUnknown
 {
-public:
+public extern(Windows) @nogc nothrow:
     HRESULT GetBuffer( 
         /* [annotation][out] */ 
         out BYTE *ppData,
@@ -924,13 +934,14 @@ struct AUDIO_VOLUME_NOTIFICATION_DATA
 const IID IID_IAudioEndpointVolumeCallback = makeGuid!"657804FA-D6AD-4496-8A60-352752AF4F89";
 interface IAudioEndpointVolumeCallback : IUnknown
 {
+extern(Windows) @nogc nothrow:
     HRESULT OnNotify(AUDIO_VOLUME_NOTIFICATION_DATA * pNotify);
 }
 
 const IID IID_IAudioEndpointVolume = makeGuid!"5CDF2C82-841E-4546-9722-0CF74078229A";
 interface IAudioEndpointVolume : IUnknown
 {
-public:
+public extern(Windows) @nogc nothrow:
     HRESULT RegisterControlChangeNotify( 
             /* [annotation][in] */ 
             IAudioEndpointVolumeCallback *pNotify);
